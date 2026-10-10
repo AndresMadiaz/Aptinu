@@ -1,92 +1,78 @@
-
-import React, { useState } from 'react';
+import React from 'react';
+import { Plus } from '@phosphor-icons/react';
 import Section from './Section';
 import { FAQItem } from '../types';
 
-const FAQ: React.FC = () => {
-  const [activeIndex, setActiveIndex] = useState<number | null>(null);
+const faqData: FAQItem[] = [
+  {
+    question: 'How much do I pay per appointment?',
+    answer: 'A flat fee per qualified appointment that shows up. The exact price depends on your industry and average deal value, and we agree it clearly on the strategy call.',
+  },
+  {
+    question: 'What counts as a qualified appointment?',
+    answer: 'Someone who matches your target criteria and shows up to the scheduled meeting. We confirm their intent and needs before booking.',
+  },
+  {
+    question: "What if the lead doesn't show up?",
+    answer: "You don't pay. If they ghost or cancel, the cost is on us. We only win when you get results.",
+  },
+  {
+    question: 'How fast can we get started?',
+    answer: 'Most systems are live within 7 to 14 days, including integration with your calendar, lead sources and CRM.',
+  },
+  {
+    question: 'Do I need to change my CRM or calendar?',
+    answer: 'No. We work with your existing tools like GoHighLevel, Google Calendar or standard CRMs.',
+  },
+  {
+    question: 'Will AI replace my sales team?',
+    answer: 'No. The AI handles first follow-up and booking, so your team can spend its time closing instead of chasing leads.',
+  },
+  {
+    question: 'What industries do you work with?',
+    answer: 'High-ticket service businesses. Gyms, clinics, real estate, home services and agencies see the best results.',
+  },
+  {
+    question: 'Is my data safe and private?',
+    answer: 'Yes. We use encryption and follow data privacy laws. Your lead and CRM data are protected at all times.',
+  },
+  {
+    question: 'What kind of support do I get?',
+    answer: 'A dedicated account manager. We monitor your AI agents daily and keep improving their conversion rates.',
+  },
+  {
+    question: 'Can I cancel anytime?',
+    answer: "Yes. You pay per appointment, so there are no long-term contracts. We want to earn your business every month.",
+  },
+];
 
-  const faqData: FAQItem[] = [
-    {
-      question: "How much do I pay per appointment?",
-      answer: "Our fees are flat rates per qualified show-up. The exact price depends on your industry and average deal value. We discuss this clearly during our strategy call."
-    },
-    {
-      question: "What counts as a qualified appointment?",
-      answer: "A qualified appointment is someone who matches your target criteria and shows up for the scheduled meeting. We verify their intent and needs before booking."
-    },
-    {
-      question: "What if the lead doesn't show up?",
-      answer: "You don't pay. Our model is performance-based. If they ghost or cancel, the cost is on us. We only win when you get results."
-    },
-    {
-      question: "How fast can we get started?",
-      answer: "Most systems are live within 7 to 14 days. This includes integration with your calendar, lead sources, and CRM."
-    },
-    {
-      question: "Do I need to change my CRM or calendar?",
-      answer: "No. We integrate with your existing tools like GoHighLevel, Google Calendar, or standard CRMs. No rip and replace required."
-    },
-    {
-      question: "Will AI replace my sales team?",
-      answer: "No. Our AI handles the initial follow-up and booking. This frees your sales team to focus on closing deals instead of chasing cold leads."
-    },
-    {
-      question: "What industries do you work with?",
-      answer: "We focus on high-ticket service businesses. Gyms, clinics, real estate, home services, and agencies see the best results."
-    },
-    {
-      question: "Is my data safe and private?",
-      answer: "We use enterprise-grade encryption and strictly follow data privacy laws. Your lead information and CRM data are protected at all times."
-    },
-    {
-      question: "What kind of support do I get?",
-      answer: "You get a dedicated account manager. We monitor your AI agents daily and optimize them for the highest conversion rates."
-    },
-    {
-      question: "Can I cancel anytime?",
-      answer: "Yes. Since you only pay per appointment, there are no long-term lock-in contracts. We want to earn your business every single month."
-    }
-  ];
-
-  return (
-    <Section id="faq" className="bg-light-bg">
-      <div className="max-w-3xl mx-auto">
-        <h2 className="text-4xl font-bold text-center mb-16">Frequently Asked Questions</h2>
-        
-        <div className="space-y-4">
-          {faqData.map((item, index) => (
-            <div 
-              key={index} 
-              className="bg-white rounded-2xl border border-black/5 overflow-hidden transition-all duration-200 hover:shadow-md"
-            >
-              <button
-                onClick={() => setActiveIndex(activeIndex === index ? null : index)}
-                className="w-full px-6 py-6 flex items-center justify-between text-left focus:outline-none"
-              >
-                <span className="text-lg font-bold">{item.question}</span>
-                <span className={`transform transition-transform duration-200 ${activeIndex === index ? 'rotate-180' : ''}`}>
-                  <svg className="w-5 h-5 text-accent-warm" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M19 9l-7 7-7-7" />
-                  </svg>
-                </span>
-              </button>
-              
-              <div 
-                className={`transition-all duration-300 ease-in-out overflow-hidden ${
-                  activeIndex === index ? 'max-h-96' : 'max-h-0'
-                }`}
-              >
-                <div className="px-6 pb-6 text-gray-600 leading-relaxed">
-                  {item.answer}
-                </div>
-              </div>
-            </div>
-          ))}
-        </div>
+const FAQ: React.FC = () => (
+  <Section id="faq" className="border-t border-line">
+    <div className="grid gap-12 lg:grid-cols-[1fr_1.6fr] lg:gap-20">
+      <div className="lg:sticky lg:top-28 lg:self-start">
+        <h2 className="text-3xl font-semibold tracking-tighter md:text-5xl">Questions</h2>
+        <p className="mt-5 max-w-[40ch] text-lg leading-relaxed text-muted">
+          Anything else, ask us on the strategy call.
+        </p>
       </div>
-    </Section>
-  );
-};
+
+      <div className="divide-y divide-line border-y border-line">
+        {faqData.map((item) => (
+          <details key={item.question} className="group">
+            <summary className="flex cursor-pointer list-none items-center justify-between gap-6 py-6 text-left text-lg font-medium transition-colors hover:text-accent">
+              {item.question}
+              <Plus
+                weight="bold"
+                className="size-5 shrink-0 text-accent transition-transform duration-200 group-open:rotate-45"
+                aria-hidden
+              />
+            </summary>
+            <p className="max-w-[60ch] pb-6 leading-relaxed text-muted">{item.answer}</p>
+          </details>
+        ))}
+      </div>
+    </div>
+  </Section>
+);
 
 export default FAQ;

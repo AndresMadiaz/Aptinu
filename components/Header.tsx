@@ -1,81 +1,59 @@
-
 import React, { useState } from 'react';
+import { List, X } from '@phosphor-icons/react';
+import ApplyLink from './ApplyLink';
+
+const navLinks = [
+  { name: 'How it works', href: '#how-it-works' },
+  { name: 'Pricing', href: '#pricing' },
+  { name: 'FAQ', href: '#faq' },
+];
 
 const Header: React.FC = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-
-  const navLinks = [
-    { name: 'How it works', href: '#how-it-works' },
-    { name: 'Pricing', href: '#pricing' },
-    { name: 'FAQ', href: '#faq' },
-  ];
+  const close = () => setIsMenuOpen(false);
 
   return (
-    <header className="fixed top-0 left-0 w-full z-50 bg-[#0a0a0a]/80 backdrop-blur-md border-b border-white/5 shadow-lg">
-      <div className="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
-        <div className="text-2xl font-bold tracking-tight">
+    <header className="fixed inset-x-0 top-0 z-50 border-b border-line bg-ink/80 backdrop-blur-lg">
+      <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-5 md:px-10">
+        <a href="#top" className="text-lg font-semibold tracking-tight" onClick={close}>
           Aptinu
-        </div>
+        </a>
 
-        {/* Desktop Nav */}
-        <nav className="hidden md:flex items-center space-x-8">
+        <nav className="hidden items-center gap-8 md:flex" aria-label="Main">
           {navLinks.map((link) => (
-            <a
-              key={link.name}
-              href={link.href}
-              className="text-gray-400 hover:text-white transition-colors duration-200 nav-link"
-            >
+            <a key={link.name} href={link.href} className="text-sm text-muted transition-colors hover:text-fg">
               {link.name}
             </a>
           ))}
-          <a
-            href="https://tally.so/r/RGMKQv"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="bg-accent-warm hover:bg-accent-warm-light text-white px-6 py-2.5 rounded-full font-semibold transition-all duration-200 transform hover:scale-105 shadow-lg shadow-accent-warm/20"
-          >
-            Apply now
-          </a>
+          <ApplyLink size="sm" />
         </nav>
 
-        {/* Mobile Toggle */}
-        <button 
-          className="md:hidden text-white p-2"
+        <button
+          type="button"
+          className="-mr-2 grid size-11 place-items-center rounded-full text-fg md:hidden"
           onClick={() => setIsMenuOpen(!isMenuOpen)}
+          aria-expanded={isMenuOpen}
+          aria-controls="mobile-menu"
+          aria-label={isMenuOpen ? 'Close menu' : 'Open menu'}
         >
-          <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            {isMenuOpen ? (
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-            ) : (
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
-            )}
-          </svg>
+          {isMenuOpen ? <X className="size-6" /> : <List className="size-6" />}
         </button>
       </div>
 
-      {/* Mobile Nav */}
       {isMenuOpen && (
-        <div className="md:hidden bg-dark-card border-b border-white/5 p-6 space-y-4 animate-in slide-in-from-top duration-300">
+        <nav id="mobile-menu" className="border-t border-line px-5 pb-6 pt-2 md:hidden" aria-label="Mobile">
           {navLinks.map((link) => (
             <a
               key={link.name}
               href={link.href}
-              className="block text-gray-400 hover:text-white py-2 nav-link"
-              onClick={() => setIsMenuOpen(false)}
+              onClick={close}
+              className="block border-b border-line py-4 text-lg text-fg"
             >
               {link.name}
             </a>
           ))}
-          <a
-            href="https://tally.so/r/RGMKQv"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="block text-center bg-accent-warm text-white px-6 py-3 rounded-full font-semibold"
-            onClick={() => setIsMenuOpen(false)}
-          >
-            Apply now
-          </a>
-        </div>
+          <ApplyLink className="mt-6 w-full" onClick={close} />
+        </nav>
       )}
     </header>
   );

@@ -1,106 +1,88 @@
-
 import React, { useState } from 'react';
 import Section from './Section';
+import ApplyLink from './ApplyLink';
+import { CalculatorState } from '../types';
+
+const fields: { key: keyof CalculatorState; label: string; help: string; max?: number }[] = [
+  { key: 'currentMonthly', label: 'Current monthly appointments', help: 'Booked calls or visits per month today.' },
+  { key: 'closeRate', label: 'Your close rate (%)', help: 'Out of every 100 appointments, how many buy.', max: 100 },
+  { key: 'avgValue', label: 'Average client value (€)', help: 'What a new client is worth to you.' },
+  { key: 'additionalAppointments', label: 'Extra appointments per month', help: 'How many more you want us to book.' },
+];
+
+const euro = new Intl.NumberFormat('en-IE', { style: 'currency', currency: 'EUR', maximumFractionDigits: 0 });
 
 const Calculator: React.FC = () => {
-  const [inputs, setInputs] = useState({
-    currentMonthly: 10,
-    closeRate: 30,
-    avgValue: 500,
-    additionalAppointments: 20
+  // Kept as strings so the user can clear a field while typing.
+  const [inputs, setInputs] = useState<Record<keyof CalculatorState, string>>({
+    currentMonthly: '10',
+    closeRate: '30',
+    avgValue: '500',
+    additionalAppointments: '20',
   });
 
-  const [result, setResult] = useState<number | null>(null);
-
-  const handleCalculate = () => {
-    const { currentMonthly, closeRate, avgValue, additionalAppointments } = inputs;
-    const currentRevenue = currentMonthly * (closeRate / 100) * avgValue;
-    const newRevenue = (currentMonthly + additionalAppointments) * (closeRate / 100) * avgValue;
-    const extraRevenue = newRevenue - currentRevenue;
-    setResult(extraRevenue);
-  };
+  const num = (key: keyof CalculatorState, max = Infinity) => Math.min(Math.max(Number(inputs[key]) || 0, 0), max);
+  const extraClients = num('additionalAppointments') * (num('closeRate', 100) / 100);
+  const extraRevenue = extraClients * num('avgValue');
+  const currentRevenue = num('currentMonthly') * (num('closeRate', 100) / 100) * num('avgValue');
 
   return (
-    <Section id="calculator" className="bg-light-bg">
-      <div className="text-center mb-16">
-        <h2 className="text-4xl md:text-5xl font-bold mb-4">See what more appointments mean for your revenue</h2>
-        <p className="text-gray-600">Calculate your potential ROI with our AI appointment setting system.</p>
-      </div>
+    <Section id="calculator">
+      <h2 className="max-w-2xl text-3xl font-semibold tracking-tighter text-balance md:text-5xl">
+        See what more appointments are worth
+      </h2>
+      <p className="mt-5 max-w-[60ch] text-lg leading-relaxed text-muted">
+        Put in your own numbers. The result updates as you type.
+      </p>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-        <div className="bg-white p-8 rounded-3xl shadow-sm border border-black/5 space-y-6">
-          <div className="space-y-2">
-            <label className="block text-sm font-medium text-gray-700">Current monthly appointments</label>
-            <input
-              type="number"
-              value={inputs.currentMonthly}
-              onChange={(e) => setInputs({ ...inputs, currentMonthly: Number(e.target.value) })}
-              className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-accent-warm/50"
-              placeholder="10"
-            />
-          </div>
-          <div className="space-y-2">
-            <label className="block text-sm font-medium text-gray-700">Your close rate (%)</label>
-            <input
-              type="number"
-              value={inputs.closeRate}
-              onChange={(e) => setInputs({ ...inputs, closeRate: Number(e.target.value) })}
-              className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-accent-warm/50"
-              placeholder="30"
-            />
-          </div>
-          <div className="space-y-2">
-            <label className="block text-sm font-medium text-gray-700">Average client value (€)</label>
-            <input
-              type="number"
-              value={inputs.avgValue}
-              onChange={(e) => setInputs({ ...inputs, avgValue: Number(e.target.value) })}
-              className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-accent-warm/50"
-              placeholder="500"
-            />
-          </div>
-          <div className="space-y-2">
-            <label className="block text-sm font-medium text-gray-700">How many more appointments do you want?</label>
-            <input
-              type="number"
-              value={inputs.additionalAppointments}
-              onChange={(e) => setInputs({ ...inputs, additionalAppointments: Number(e.target.value) })}
-              className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-accent-warm/50"
-              placeholder="20"
-            />
-          </div>
-          <button
-            onClick={handleCalculate}
-            className="w-full bg-accent-warm text-white py-4 rounded-xl font-bold transition-all transform hover:scale-[1.02]"
-          >
-            Calculate
-          </button>
-        </div>
-
-        <div className="flex flex-col justify-center">
-          {result !== null ? (
-            <div className="glass-card bg-white/70 p-10 rounded-[2.5rem] border border-black/5 shadow-xl text-center animate-in fade-in zoom-in duration-300">
-              <p className="text-gray-500 mb-2 uppercase tracking-widest text-sm font-bold">Additional Revenue</p>
-              <h3 className="text-6xl font-black text-accent-warm mb-4">
-                €{result.toLocaleString()}
-              </h3>
-              <p className="text-xl text-gray-700 mb-8 font-medium">
-                That's €{result.toLocaleString()} extra per month in revenue.
+      <div className="mt-14 grid overflow-hidden rounded-2xl border border-line lg:grid-cols-[1.2fr_1fr]">
+        <form className="grid gap-6 bg-surface p-7 sm:grid-cols-2 md:p-9" onSubmit={(e) => e.preventDefault()}>
+          {fields.map((f) => (
+            <div key={f.key} className="flex flex-col gap-2">
+              <label htmlFor={f.key} className="text-sm font-medium">
+                {f.label}
+              </label>
+              <input
+                id={f.key}
+                type="number"
+                inputMode="numeric"
+                min={0}
+                max={f.max}
+                value={inputs[f.key]}
+                onChange={(e) => setInputs({ ...inputs, [f.key]: e.target.value })}
+                aria-describedby={`${f.key}-help`}
+                className="h-12 rounded-xl border border-white/15 bg-ink px-4 text-lg tabular-nums transition-colors hover:border-white/25 focus:border-accent focus:outline-none"
+              />
+              <p id={`${f.key}-help`} className="text-sm text-muted">
+                {f.help}
               </p>
-              <a
-                href="https://tally.so/r/RGMKQv"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-block bg-[#1a1a1a] text-white px-8 py-4 rounded-full font-bold transition-all hover:bg-black"
-              >
-                Apply now
-              </a>
             </div>
-          ) : (
-            <div className="text-center p-10 bg-gray-100/50 border-2 border-dashed border-gray-200 rounded-[2.5rem]">
-              <p className="text-gray-400">Enter your numbers to see your revenue potential.</p>
-            </div>
-          )}
+          ))}
+        </form>
+
+        <div className="relative flex flex-col justify-between gap-10 overflow-hidden bg-accent-soft p-7 md:p-9">
+          <div aria-live="polite">
+            <p className="text-sm font-medium text-muted">Extra revenue per month</p>
+            <p className="mt-2 text-5xl font-semibold tabular-nums tracking-tight text-accent md:text-6xl">
+              {euro.format(extraRevenue)}
+            </p>
+            <dl className="mt-8 grid grid-cols-2 gap-6 border-t border-line pt-6">
+              <div>
+                <dt className="text-sm text-muted">New clients per month</dt>
+                <dd className="mt-1 text-xl tabular-nums">{extraClients.toLocaleString('en-IE', { maximumFractionDigits: 1 })}</dd>
+              </div>
+              <div>
+                <dt className="text-sm text-muted">Extra per year</dt>
+                <dd className="mt-1 text-xl tabular-nums">{euro.format(extraRevenue * 12)}</dd>
+              </div>
+            </dl>
+            {currentRevenue > 0 && (
+              <p className="mt-6 text-sm leading-relaxed text-muted">
+                On top of the {euro.format(currentRevenue)} you already make from appointments each month.
+              </p>
+            )}
+          </div>
+          <ApplyLink className="self-start" />
         </div>
       </div>
     </Section>

@@ -1,60 +1,36 @@
-
-import React, { useEffect } from 'react';
+import React from 'react';
 import Header from './components/Header';
 import Hero from './components/Hero';
 import Features from './components/Features';
+import HowItWorks from './components/HowItWorks';
+import Pricing from './components/Pricing';
 import Calculator from './components/Calculator';
+import Fit from './components/Fit';
 import FAQ from './components/FAQ';
 import Booking from './components/Booking';
 
-const App: React.FC = () => {
-  useEffect(() => {
-    // Intercept clicks on links starting with # for smooth scrolling
-    const handleSmoothScroll = (e: MouseEvent) => {
-      const target = e.target as HTMLElement;
-      const link = target.closest('a');
-      
-      if (link && link.getAttribute('href')?.startsWith('#')) {
-        e.preventDefault();
-        const id = link.getAttribute('href')?.substring(1);
-        const element = document.getElementById(id || '');
-        
-        if (element) {
-          element.scrollIntoView({
-            behavior: 'smooth',
-            block: 'start'
-          });
-          
-          // Update URL hash without jumping
-          window.history.pushState(null, '', `#${id}`);
-        }
-      }
-    };
-
-    document.addEventListener('click', handleSmoothScroll);
-    return () => document.removeEventListener('click', handleSmoothScroll);
-  }, []);
-
-  return (
-    <div className="flex flex-col min-h-screen">
-      <Header />
-      <main>
-        <Hero />
-        <Calculator />
-        <Features />
-        <Booking />
-        <FAQ />
-      </main>
-      <footer className="bg-dark-bg py-10 border-t border-white/5 text-center">
-        <div className="max-w-7xl mx-auto px-6 flex flex-col md:flex-row items-center justify-between">
-          <div className="text-xl font-bold mb-4 md:mb-0">Aptinu</div>
-          <div className="text-gray-500 text-sm">
-            © {new Date().getFullYear()} Aptinu. Performance-based AI solutions.
-          </div>
-        </div>
-      </footer>
-    </div>
-  );
-};
+const App: React.FC = () => (
+  <div className="flex min-h-[100dvh] flex-col overflow-x-clip">
+    <Header />
+    <main>
+      <Hero />
+      <Features />
+      <HowItWorks />
+      <Pricing />
+      <Calculator />
+      <Fit />
+      <FAQ />
+      <Booking />
+    </main>
+    <footer className="border-t border-line px-5 py-10 md:px-10">
+      <div className="mx-auto flex max-w-6xl flex-col gap-3 text-sm text-muted sm:flex-row sm:items-center sm:justify-between">
+        <a href="#top" className="text-base font-semibold tracking-tight text-fg">
+          Aptinu
+        </a>
+        <p>© {new Date().getFullYear()} Aptinu. Performance-based AI appointment setting.</p>
+      </div>
+    </footer>
+  </div>
+);
 
 export default App;

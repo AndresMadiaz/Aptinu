@@ -1,20 +1,17 @@
-<div align="center">
-<img width="1200" height="475" alt="GHBanner" src="https://github.com/user-attachments/assets/0aa67016-6eaf-458a-adb2-6e31a0763ed6" />
-</div>
+# Aptinu
 
-# Run and deploy your AI Studio app
+Landing page for [aptinu.com](https://aptinu.com): performance-based AI appointment setting.
 
-This contains everything you need to run your app locally.
+Built with React, Vite and Tailwind CSS v4.
 
-View your app in AI Studio: https://ai.studio/apps/drive/1ZQstI-86XS6hsRa5BfpwMaXocCqxO5yZ
+## Run locally
 
-## Run Locally
+Requires Node.js 20+.
 
-**Prerequisites:**  Node.js
+```bash
+npm install
+npm run dev      # http://localhost:3000
+npm run build    # production build in dist/
+```
 
-
-1. Install dependencies:
-   `npm install`
-2. Set the `GEMINI_API_KEY` in [.env.local](.env.local) to your Gemini API key
-3. Run the app:
-   `npm run dev`
+The "Apply now" buttons link to the Tally form set in `components/ApplyLink.tsx`.

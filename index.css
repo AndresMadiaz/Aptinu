@@ -1,0 +1,63 @@
+@import 'tailwindcss';
+@import '@fontsource-variable/geist';
+
+/* Radius rule: interactive elements are pills, panels are rounded-2xl, inputs are rounded-xl. */
+@theme {
+  --font-sans: 'Geist Variable', ui-sans-serif, system-ui, sans-serif;
+
+  --color-ink: #0b0b0d;
+  --color-surface: #141418;
+  --color-surface-2: #1b1b21;
+  --color-line: rgb(255 255 255 / 0.08);
+  --color-fg: #f4f4f5;
+  --color-muted: #a1a1aa;
+  --color-accent: #ff6b9d;
+  --color-accent-soft: rgb(255 107 157 / 0.12);
+}
+
+html {
+  background: var(--color-ink);
+  color: var(--color-fg);
+  -webkit-font-smoothing: antialiased;
+}
+
+::selection {
+  background: var(--color-accent);
+  color: var(--color-ink);
+}
+
+:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 3px;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  html {
+    scroll-behavior: smooth;
+  }
+
+  /* Content stays visible in browsers without scroll-driven animations. */
+  @supports (animation-timeline: view()) {
+    .reveal > * {
+      animation: rise linear both;
+      animation-timeline: view();
+      animation-range: entry 0% entry 35%;
+    }
+  }
+
+  .rise {
+    animation: rise 0.8s cubic-bezier(0.16, 1, 0.3, 1) both;
+    animation-delay: var(--delay, 0ms);
+  }
+}
+
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+}
+
+details > summary::-webkit-details-marker {
+  display: none;
+}
